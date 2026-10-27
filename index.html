@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Berkah Alam — Susu Bubuk Full Cream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--bg:#fff;--fg:#000;--line:rgba(0,0,0,.18);--mute:rgba(0,0,0,.6);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0b;--fg:#f4f4f4;--line:rgba(255,255,255,.2);--mute:rgba(255,255,255,.65)}}
+:root[data-theme="dark"]{--bg:#0b0b0b;--fg:#f4f4f4;--line:rgba(255,255,255,.2);--mute:rgba(255,255,255,.65)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);font-family:Montserrat,system-ui,sans-serif;font-weight:500;overflow-x:clip;scroll-behavior:smooth}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:calc(1.4rem + env(safe-area-inset-top,0px)) 2rem 1.4rem;color:#fff;mix-blend-mode:difference;font-weight:800;font-size:14px}
+
+.track{height:320vh;position:relative;background:#000;color:#fff}
+.stick{position:sticky;top:0;height:100svh;overflow:hidden}
+.word{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:clamp(72px,17vw,290px);letter-spacing:-.04em;color:#2b2b2b;opacity:0;transform:translateY(6%);transition:opacity .6s,transform .8s cubic-bezier(.2,.8,.2,1);text-transform:uppercase;pointer-events:none}
+.word.on{opacity:1;transform:none}
+#gl{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.cap{position:absolute;bottom:calc(1.6rem + env(safe-area-inset-bottom,0px));font-size:13px;font-weight:800;pointer-events:none}
+.cap.l{left:2rem}.cap.r{right:2rem}
+.cap.c{left:50%;transform:translateX(-50%);color:#9a9a9a;font-weight:500;transition:opacity .4s;white-space:nowrap}
+
+.info{display:grid;grid-template-columns:1fr 1fr;gap:4rem;padding:8rem 2rem;max-width:1200px;margin:auto}
+.info h2{font-weight:800;font-size:clamp(34px,5vw,72px);line-height:1.02;letter-spacing:-.035em}
+dl div{display:flex;justify-content:space-between;gap:2rem;padding:1.05rem 0;border-bottom:1px solid var(--line)}
+dl div:first-child{border-top:1px solid var(--line)}
+dt{color:var(--mute);font-size:14px}
+dd{font-weight:800;font-size:14px;text-align:right}
+
+footer{background:#000;color:#fff;padding:4rem 2rem calc(3rem + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:2rem}
+footer b{font-weight:800;font-size:clamp(28px,4vw,52px);letter-spacing:-.03em;line-height:1}
+footer p{font-size:13px;line-height:1.7;color:#aaa;max-width:26rem}
+
+@media(max-width:760px){.info{grid-template-columns:1fr;gap:3rem;padding:5rem 1.4rem}.nav{padding-left:1.4rem;padding-right:1.4rem}.cap.l{left:1.4rem}.cap.r{right:1.4rem}.word{font-size:19vw}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="nav"><span>Berkah Alam</span><span>400 g</span></header>
+
+<section class="track" id="track">
+  <div class="stick">
+    <div class="word on" aria-hidden="true">Murni</div>
+    <div class="word" aria-hidden="true">Bergizi</div>
+    <div class="word" aria-hidden="true">Lezat</div>
+    <canvas id="gl" aria-label="Kemasan Susu Bubuk Full Cream Berkah Alam dalam 3D. Gulir atau seret untuk memutar."></canvas>
+    <div class="cap l">Susu Bubuk Full Cream</div>
+    <div class="cap c" id="hint">Gulir atau seret</div>
+    <div class="cap r">100% alami</div>
+  </div>
+</section>
+
+<section class="info" id="info">
+  <h2>Susu bubuk full cream tanpa bahan pengawet.</h2>
+  <dl>
+    <div><dt>Jenis</dt><dd>Full cream</dd></div>
+    <div><dt>Berat bersih</dt><dd>400 g</dd></div>
+    <div><dt>Bahan pengawet</dt><dd>Tanpa pengawet</dd></div>
+    <div><dt>Izin edar</dt><dd>BPOM RI MD 103355262236</dd></div>
+    <div><dt>Sertifikasi</dt><dd>Halal Indonesia</dd></div>
+    <div><dt>Produsen</dt><dd>PT. Maju Bersama Sejahtera</dd></div>
+  </dl>
+</section>
+
+<footer>
+  <b>Berkah Alam</b>
+  <p>Diproduksi oleh PT. Maju Bersama Sejahtera<br>Mojosari, Kab. Mojokerto, Jawa Timur, Indonesia</p>
+</footer>
+
+<script>
+const F='Montserrat,Arial,sans-serif';
+function labelTex(){
+  const W=1024,H=1600,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,W,0);g.addColorStop(0,'#ECEEE8');g.addColorStop(.5,'#FBFCF8');g.addColorStop(1,'#E8EBE3');
+  x.fillStyle=g;x.fillRect(0,0,W,H);x.fillStyle='#0c0c0c';x.fillRect(0,0,W,200);x.fillStyle='#262626';x.fillRect(0,60,W,5);x.fillRect(0,92,W,3);
+  x.fillStyle='#111';x.strokeStyle='#111';x.textAlign='center';
+  const T=(s,y,max,sz,ls,xx)=>{x.font=`800 ${sz}px ${F}`;x.letterSpacing=ls+'px';let wd=x.measureText(s).width;if(wd>max){sz*=max/wd;x.font=`800 ${sz}px ${F}`}x.fillText(s,xx||W/2,y)};
+  T('BERKAH ALAM',330,500,44,6);T('SUSU BUBUK',500,880,170,-4);T('FULL CREAM',596,520,72,8);
+  x.lineWidth=12;x.lineJoin='round';x.lineCap='round';
+  x.beginPath();x.moveTo(410,760);x.lineTo(430,960);x.quadraticCurveTo(432,978,450,978);x.lineTo(574,978);x.quadraticCurveTo(592,978,594,960);x.lineTo(614,760);x.stroke();
+  [[460,742,34],[510,722,40],[570,726,40],[622,748,32]].forEach(f=>{x.beginPath();x.arc(f[0],f[1],f[2],0,7);x.fillStyle='#FBFCF8';x.fill();x.stroke()});
+  x.lineWidth=8;x.beginPath();x.moveTo(300,990);x.quadraticCurveTo(300,900,330,840);x.stroke();
+  x.fillStyle='#111';for(let i=0;i<5;i++){const yy=985-i*32;[-1,1].forEach(s=>{x.save();x.translate(305+i*5,yy-i*4);x.rotate(s*.7-.2);x.beginPath();x.ellipse(s*18,0,26,9,0,0,7);x.fill();x.restore()})}
+  x.beginPath();x.rect(690,885,150,70);x.fillStyle='#FBFCF8';x.fill();x.stroke();x.beginPath();x.arc(865,868,36,0,7);x.fill();x.stroke();
+  x.fillStyle='#111';x.beginPath();x.arc(880,860,8,0,7);x.fill();x.beginPath();x.arc(718,915,16,0,7);x.fill();x.beginPath();x.arc(790,905,12,0,7);x.fill();
+  [[705,955],[735,955],[800,955],[828,955]].forEach(l=>{x.beginPath();x.moveTo(l[0],l[1]);x.lineTo(l[0],l[1]+32);x.stroke()});
+  x.lineWidth=9;x.beginPath();x.moveTo(230,992);x.lineTo(880,992);x.stroke();
+  T('MURNI, BERGIZI & LEZAT',1072,700,58,2);
+  x.fillStyle='#111';x.beginPath();x.arc(860,1170,62,0,7);x.fill();x.fillStyle='#fff';T('100%',1170,90,34,0,860);T('ALAMI',1200,90,24,2,860);
+  x.fillStyle='#111';T('TANPA PENGAWET',1256,200,17,1,860);T('BERAT BERSIH: 400g',1260,420,40,1,420);
+  x.textAlign='left';x.fillStyle='#222';x.font=`500 25px ${F}`;x.letterSpacing='0px';
+  ['BPOM RI MD 103355262236','Diproduksi oleh:','PT. Maju Bersama Sejahtera','Mojosari, Kab. Mojokerto, Jawa Timur, Indonesia'].forEach((s,i)=>x.fillText(s,200,1400+i*36));
+  x.lineWidth=5;x.strokeStyle='#111';x.beginPath();x.arc(112,1450,44,0,7);x.stroke();x.fillStyle='#111';x.textAlign='center';x.font=`800 20px ${F}`;x.fillText('HALAL',112,1458);
+  return c}
+function backTex(){const c=document.createElement('canvas');c.width=512;c.height=800;const x=c.getContext('2d');x.fillStyle='#F4F6F0';x.fillRect(0,0,512,800);x.fillStyle='#0c0c0c';x.fillRect(0,0,512,100);x.fillStyle='#9aa39a';x.font=`800 30px ${F}`;x.textAlign='center';x.fillText('BERKAH ALAM',256,420);return c}
+
+const cv=document.getElementById('gl'),track=document.getElementById('track');
+const rd=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});rd.setPixelRatio(Math.min(devicePixelRatio,2));rd.outputEncoding=THREE.sRGBEncoding;
+const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(32,1,.1,50);
+sc.add(new THREE.HemisphereLight(0xffffff,0x333333,.85));
+const key=new THREE.DirectionalLight(0xffffff,1);key.position.set(3,4,6);sc.add(key);
+const rim=new THREE.DirectionalLight(0xffffff,.9);rim.position.set(-5,2,-3);sc.add(rim);
+const pouch=new THREE.Group();sc.add(pouch);
+const ss=(a,b,v)=>{v=Math.min(1,Math.max(0,(v-a)/(b-a)));return v*v*(3-2*v)};
+const G=(()=>{const hw=.8,hh=1.3,g=new THREE.PlaneGeometry(hw*2,hh*2,40,60),p=g.attributes.position;
+for(let i=0;i<p.count;i++){let X=p.getX(i),Y=p.getY(i);const u=X/hw,v=Y/hh;X*=1+.05*(-v);const e=Math.pow(Math.max(0,1-u*u),.7);p.setXYZ(i,X,Y,.3*e*(1-ss(.7,.88,v))*(.35+.65*ss(-1,-.55,v))+.014*Math.sin(X*9+Y*5)*Math.sin(Y*7+1)*e)}
+g.computeVertexNormals();return g})();
+const ft=new THREE.CanvasTexture(labelTex()),bt=new THREE.CanvasTexture(backTex());
+[ft,bt].forEach(t=>{t.encoding=THREE.sRGBEncoding;t.anisotropy=8});
+const mk=t=>new THREE.MeshPhysicalMaterial({map:t,roughness:.4,clearcoat:.5,clearcoatRoughness:.3});
+const fr=new THREE.Mesh(G,mk(ft)),bk=new THREE.Mesh(G,mk(bt));bk.rotation.y=Math.PI;pouch.add(fr,bk);pouch.scale.setScalar(1.08);
+document.fonts.load('800 40px Montserrat').then(()=>{ft.image=labelTex();ft.needsUpdate=true;bt.image=backTex();bt.needsUpdate=true});
+function size(){const w=cv.clientWidth,h=cv.clientHeight;rd.setSize(w,h,false);cam.aspect=w/h;cam.position.set(0,0,7*Math.max(1,2.4/(4.01*cam.aspect)));cam.updateProjectionMatrix()}
+addEventListener('resize',size);size();
+
+let drag=0,vel=0,down=false,lx=0,mx=0,my=0,vis=true,prog=0,ry=0,rx=0;
+cv.addEventListener('pointerdown',e=>{down=true;lx=e.clientX;cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width-.5;my=(e.clientY-r.top)/r.height-.5;if(down){vel=(e.clientX-lx)*.012;drag+=vel;lx=e.clientX}});
+['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,()=>down=false));
+new IntersectionObserver(es=>vis=es[0].isIntersecting).observe(track);
+const words=[...document.querySelectorAll('.word')],hint=document.getElementById('hint');
+function onScroll(){
+  const max=track.offsetHeight-innerHeight;prog=Math.min(1,Math.max(0,scrollY/max));
+  const i=Math.min(2,Math.floor(prog*3));words.forEach((w,k)=>w.classList.toggle('on',k===i));
+  hint.style.opacity=prog>.02?0:1;
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+(function loop(now){requestAnimationFrame(loop);if(!vis)return;
+  if(!down){vel*=.94;drag+=vel;if(Math.abs(vel)<.002)drag-=drag*.02}
+  ry+=(drag+prog*Math.PI*2-ry)*.12;rx+=(my*.3-rx)*.08;
+  pouch.rotation.set(rx,ry+mx*.2,-.08);
+  rd.render(sc,cam)})(performance.now());
+</script>
+</body>
+</html>
